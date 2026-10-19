@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="NEON RUSH: CYBER RUNNER - A high-speed 3D synthwave endless runner game built with Three.js and WebGL." />
+  <meta name="theme-color" content="#070014" />
+  <title>NEON RUSH: CYBER RUNNER</title>
+  
+  <!-- Futuristic Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/src/styles/main.css" />
+  <link rel="stylesheet" href="/src/styles/hud.css" />
+  <link rel="stylesheet" href="/src/styles/effects.css" />
+</head>
+<body>
+  <!-- 3D WebGL Canvas Container -->
+  <div id="game-canvas-container"></div>
+
+  <!-- CRT Scanline & Vignette Effect Overlays -->
+  <div id="scanline-overlay"></div>
+  <div id="vignette-overlay"></div>
+  <div id="impact-flash" class="flash-hidden"></div>
+  <div id="speed-lines-container"></div>
+
+  <!-- UI Overlay Container -->
+  <div id="ui-container">
+    
+    <!-- TOP IN-GAME HUD -->
+    <header id="hud" class="ui-panel hud-hidden">
+      <div class="hud-left">
+        <div class="hud-metric">
+          <span class="hud-label">SCORE</span>
+          <span id="hud-score" class="hud-value glowing-cyan">0</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-label">DISTANCE</span>
+          <span id="hud-distance" class="hud-value">0<small>m</small></span>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <div class="speed-gauge-wrap">
+          <div class="speed-gauge-bar">
+            <div id="speed-gauge-fill" class="speed-gauge-fill"></div>
+          </div>
+          <div class="speed-gauge-info">
+            <span id="hud-speed-text">VELOCITY: 100%</span>
+            <span id="hud-level-badge" class="level-badge">LVL 1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="hud-metric">
+          <span class="hud-label">RECORD</span>
+          <span id="hud-best" class="hud-value glowing-magenta">0</span>
+        </div>
+        <div class="hud-controls">
+          <button id="btn-audio-hud" class="hud-btn" aria-label="Toggle Audio" title="Mute/Unmute Audio (M)">
+            <span class="icon-audio">🔊</span>
+          </button>
+          <button id="btn-pause-hud" class="hud-btn" aria-label="Pause Game" title="Pause (ESC/P)">
+            <span class="icon-pause">⏸</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MOBILE TOUCH CONTROLS -->
+    <div id="mobile-controls" class="mobile-controls-hidden">
+      <button id="btn-touch-left" class="touch-btn" aria-label="Move Left">◀</button>
+      <button id="btn-touch-jump" class="touch-btn touch-btn-jump" aria-label="Jump">▲ JUMP</button>
+      <button id="btn-touch-right" class="touch-btn" aria-label="Move Right">▶</button>
+    </div>
+
+    <!-- START / READY SCREEN -->
+    <section id="start-screen" class="ui-screen active">
+      <div class="screen-content cyber-card">
+        <div class="brand-tag">SYNTHWAVE PROTOCOL // V2.0</div>
+        <h1 class="glitch-title" data-text="NEON RUSH">NEON RUSH</h1>
+        <p class="subtitle">CYBER RUNNER</p>
+
+        <div class="controls-guide-panel">
+          <h3>PILOT CONTROLS</h3>
+          <div class="control-rows">
+            <div class="control-row">
+              <span class="key-cap">◀</span>
+              <span class="key-cap">▶</span>
+              <span class="key-alt">or [A] [D]</span>
+              <span class="control-desc">SWITCH LANES</span>
+            </div>
+            <div class="control-row">
+              <span class="key-cap key-space">SPACEBAR</span>
+              <span class="key-alt">or [▲] [W]</span>
+              <span class="control-desc">GRAVITY JUMP</span>
+            </div>
+            <div class="control-row">
+              <span class="key-cap">ESC</span>
+              <span class="key-alt">or [P]</span>
+              <span class="control-desc">PAUSE / RESUME</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-banner">
+          <span class="score-banner-label">PERSONAL BEST RECORD</span>
+          <span id="start-best-score" class="score-banner-value">0</span>
+        </div>
+
+        <div class="action-row">
+          <button id="btn-start" class="cyber-btn primary-glow">
+            <span class="btn-text">INITIALIZE RUN</span>
+            <span class="btn-corner"></span>
+          </button>
+        </div>
+
+        <div class="screen-footer-options">
+          <button id="btn-toggle-sound" class="text-toggle-btn">
+            AUDIO: <span id="lbl-sound-status" class="status-on">SYNTH ON</span>
+          </button>
+          <span class="footer-divider">•</span>
+          <button id="btn-toggle-graphics" class="text-toggle-btn">
+            BLOOM: <span id="lbl-graphics-status" class="status-on">ULTRA</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAUSE SCREEN -->
+    <section id="pause-screen" class="ui-screen">
+      <div class="screen-content cyber-card">
+        <div class="brand-tag">SYSTEM PAUSED</div>
+        <h2 class="section-title">WARP DRIVE SUSPENDED</h2>
+        
+        <div class="stats-preview">
+          <div class="stat-box">
+            <span class="stat-label">CURRENT SCORE</span>
+            <span id="pause-current-score" class="stat-val glowing-cyan">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">DISTANCE</span>
+            <span id="pause-current-distance" class="stat-val">0m</span>
+          </div>
+        </div>
+
+        <div class="action-row column">
+          <button id="btn-resume" class="cyber-btn primary-glow">
+            <span class="btn-text">RESUME RUN</span>
+          </button>
+          <button id="btn-restart-pause" class="cyber-btn secondary-glow">
+            <span class="btn-text">RESTART RUN</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME OVER SCREEN -->
+    <section id="game-over-screen" class="ui-screen">
+      <div class="screen-content cyber-card danger-card">
+        <div class="brand-tag danger-tag">NEURAL LINK SEVERED</div>
+        <h2 class="game-over-title">CRITICAL IMPACT</h2>
+        <p class="game-over-subtitle">CYBER CUBE DESTABILIZED</p>
+
+        <div id="new-high-score-badge" class="new-record-badge hidden">
+          ★ NEW CYBERSPACE RECORD! ★
+        </div>
+
+        <div class="game-over-stats">
+          <div class="stat-box highlight">
+            <span class="stat-label">FINAL SCORE</span>
+            <span id="game-over-score" class="stat-val glowing-cyan">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">BEST RECORD</span>
+            <span id="game-over-best" class="stat-val glowing-magenta">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">DISTANCE RUN</span>
+            <span id="game-over-distance" class="stat-val">0m</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">MAX SPEED</span>
+            <span id="game-over-speed" class="stat-val">0%</span>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button id="btn-restart" class="cyber-btn primary-glow">
+            <span class="btn-text">REBOOT SYSTEM [ENTER]</span>
+            <span class="btn-corner"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Entry Script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
