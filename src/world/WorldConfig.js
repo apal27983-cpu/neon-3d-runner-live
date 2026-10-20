@@ -19,8 +19,10 @@ export const WorldConfig = {
   PLAYER_SIZE: { width: 1.2, height: 1.2, depth: 1.2 },
   // Fair collision box slightly tighter than visual mesh
   PLAYER_HITBOX: { width: 0.85, height: 0.85, depth: 0.85 },
-  GRAVITY: 52.0, // 2x gravity multiplier for snappy, realistic jumps
-  JUMP_IMPULSE: 17.5, // Tuned for quick ascent and rapid descent
+  GRAVITY: 52.0, // Base gravity
+  GRAVITY_MULTIPLIER: 2.0, // 2x gravity multiplier for snappy, realistic jumps
+  JUMP_GRAVITY_MULTIPLIER: 2.0,
+  JUMP_IMPULSE: 18.0, // Tuned for quick ascent and snappy descent with 2x gravity
   LANE_CHANGE_SPEED: 18.0, // Interpolation speed for smooth lane change
   
   // Gameplay Speeds
@@ -54,7 +56,7 @@ export const WorldConfig = {
   
   // Obstacles
   SPAWN_START_Z: -180.0, // Initial spawn distance ahead
-  MIN_OBSTACLE_INTERVAL: 0.55, // Fast obstacle spawn interval at high speed
-  MAX_OBSTACLE_INTERVAL: 1.25, // Fast initial obstacle spawn interval
+  MIN_OBSTACLE_INTERVAL: 0.38, // Fast obstacle spawn interval at high speed
+  MAX_OBSTACLE_INTERVAL: 0.85, // Fast initial obstacle spawn interval
   RECYCLE_Z: 20.0 // Obstacle passes player and is recycled
 };

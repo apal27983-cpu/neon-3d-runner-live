@@ -7,6 +7,7 @@ export class PlayerPhysics {
     this.vy = 0;
     this.isGrounded = true;
     this.gravity = WorldConfig.GRAVITY;
+    this.gravityMultiplier = WorldConfig.GRAVITY_MULTIPLIER || 2.0;
     this.jumpImpulse = WorldConfig.JUMP_IMPULSE;
     
     this.onJump = callbacks.onJump || (() => {});
@@ -35,7 +36,9 @@ export class PlayerPhysics {
 
   update(dt) {
     if (!this.isGrounded) {
-      this.vy -= this.gravity * dt;
+      // 2x gravity multiplier for snappy, realistic jump and rapid ground return
+      const effectiveGravity = this.gravity * (this.gravityMultiplier || 2.0);
+      this.vy -= effectiveGravity * dt;
       this.y += this.vy * dt;
 
       if (this.y <= WorldConfig.GROUND_Y) {

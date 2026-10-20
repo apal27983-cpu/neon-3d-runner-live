@@ -214,8 +214,13 @@ export class Game {
 
     if (state === GameStates.PLAYING) {
       // 1. Difficulty & Speed (with score >= 500 boost)
+      const wasBoosted = this.difficulty.isBoosted;
       this.difficulty.update(dt, this.score.score);
       const currentSpeed = this.difficulty.currentSpeed;
+      if (!wasBoosted && this.difficulty.isBoosted) {
+        this.audio.playScoreChime();
+        this.followCamera.addTrauma(0.25);
+      }
       this.audio.setMusicTempo(currentSpeed / this.difficulty.initialSpeed);
 
       // 2. Player Update

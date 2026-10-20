@@ -6,24 +6,26 @@ export class ObstacleSpawner {
     this.pool = pool;
     this.spawnTimer = 0;
     this.spawnInterval = WorldConfig.MAX_OBSTACLE_INTERVAL;
-    this.gracePeriod = 1.2; // Quick grace period to get straight into the action
+    this.gracePeriod = 0.75; // Fast grace period to get straight into the action
     this.elapsedTime = 0;
   }
 
   update(dt, speed, difficultyMultiplier) {
     this.elapsedTime += dt;
+
+    // Scale spawn interval with game speed & difficulty for faster, intense spawning
+    const minInterval = WorldConfig.MIN_OBSTACLE_INTERVAL;
+    const maxInterval = WorldConfig.MAX_OBSTACLE_INTERVAL;
+    const speedReduction = Math.max(0, speed - WorldConfig.INITIAL_SPEED) * 0.055;
+    const diff = Math.max(1.0, difficultyMultiplier || 1.0);
+    this.spawnInterval = Math.max(
+      minInterval,
+      (maxInterval - speedReduction) / diff
+    );
+
     if (this.elapsedTime < this.gracePeriod) {
       return [];
     }
-
-    // Scale spawn interval with game speed & difficulty
-    // High speed = even faster spawns between obstacle waves
-    const minInterval = WorldConfig.MIN_OBSTACLE_INTERVAL;
-    const maxInterval = WorldConfig.MAX_OBSTACLE_INTERVAL;
-    this.spawnInterval = Math.max(
-      minInterval,
-      maxInterval - (speed - WorldConfig.INITIAL_SPEED) * 0.045
-    );
 
     this.spawnTimer += dt;
     if (this.spawnTimer >= this.spawnInterval) {

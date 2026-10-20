@@ -8,6 +8,7 @@ import { GameStates, GameStateManager } from '../src/core/GameState.js';
 import { ScoreSystem } from '../src/systems/ScoreSystem.js';
 import { DifficultySystem } from '../src/systems/DifficultySystem.js';
 import { WorldConfig } from '../src/world/WorldConfig.js';
+import { ObstacleSpawner } from '../src/obstacles/ObstacleSpawner.js';
 
 test('MovementController: handles lane changes and boundaries', () => {
   const controller = new MovementController();
@@ -50,6 +51,9 @@ test('PlayerPhysics: gravity, jumping, airborne check, and landing', () => {
       landedImpact = impact;
     }
   });
+
+  // 2x Jump gravity multiplier verified
+  assert.equal(physics.gravityMultiplier, 2.0, 'Jump gravity multiplier should be 2x');
 
   // Initially grounded
   assert.equal(physics.isGrounded, true);
@@ -166,4 +170,19 @@ test('Collision Detection: AABB intersection logic', () => {
 
   assert.equal(boxA.intersectsBox(boxIntersecting), true, 'Overlapping boxes must intersect');
   assert.equal(boxA.intersectsBox(boxFar), false, 'Separated boxes must not intersect');
+});
+
+test('ObstacleSpawner: fast spawn rate and difficulty scaling', () => {
+  const dummyPool = { get: () => null };
+  const spawner = new ObstacleSpawner(dummyPool);
+  assert.equal(WorldConfig.MAX_OBSTACLE_INTERVAL <= 0.85, true, 'Max obstacle interval should be fast (<= 0.85s)');
+  assert.equal(WorldConfig.MIN_OBSTACLE_INTERVAL <= 0.40, true, 'Min obstacle interval should be fast (<= 0.40s)');
+
+  // Update spawner with initial speed and base difficulty
+  spawner.update(0.1, WorldConfig.INITIAL_SPEED, 1.0);
+  assert.ok(spawner.spawnInterval <= 0.85, 'Initial spawn interval should be fast');
+
+  // Higher difficulty / speed produces even faster spawn interval
+  spawner.update(0.1, 45.0, 1.5);
+  assert.ok(spawner.spawnInterval < 0.85, 'Higher speed and difficulty should spawn obstacles faster');
 });

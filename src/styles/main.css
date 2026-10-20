@@ -117,7 +117,9 @@ html, body {
   height: 100%;
 }
 
-#game-over-screen .screen-content.danger-card {
+#game-over-screen .screen-content,
+#game-over-screen .screen-content.danger-card,
+#game-over-screen .cyber-card {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -198,18 +200,44 @@ html, body {
   margin-bottom: 0.4rem;
 }
 
-.game-over-title {
+/* Game Over Screen - Comprehensive Neon Pink Text Glow */
+#game-over-screen {
+  color: #FFE6F7;
+  text-shadow: 0 0 10px #FF007F, 0 0 20px #FF2BD6;
+}
+
+#game-over-screen .game-over-title {
   color: #FFFFFF;
   text-shadow: 0 0 12px #FF007F, 0 0 24px #FF007F, 0 0 45px #FF2BD6, 0 0 70px #FF007F, 0 0 95px #FF2BD6;
 }
 
-.game-over-subtitle {
+#game-over-screen .game-over-subtitle {
   font-family: var(--font-display);
   font-size: 0.95rem;
   letter-spacing: 0.2em;
   color: #FFE6F7;
-  text-shadow: 0 0 8px #FF007F, 0 0 18px #FF2BD6;
+  text-shadow: 0 0 8px #FF007F, 0 0 18px #FF2BD6, 0 0 32px #FF007F;
   margin-bottom: 1.5rem;
+}
+
+#game-over-screen .brand-tag,
+#game-over-screen .danger-tag {
+  color: #FF2BD6;
+  text-shadow: 0 0 8px #FF007F, 0 0 16px #FF2BD6, 0 0 28px #FF007F;
+}
+
+#game-over-screen .stat-label {
+  color: #FFB3E6 !important;
+  text-shadow: 0 0 8px #FF007F, 0 0 16px rgba(255, 43, 214, 0.8) !important;
+}
+
+#game-over-screen .stat-val {
+  color: #FFFFFF !important;
+  text-shadow: 0 0 8px #FF007F, 0 0 18px #FF2BD6, 0 0 32px #FF007F, 0 0 48px #FF2BD6 !important;
+}
+
+#game-over-screen .new-record-badge {
+  text-shadow: 0 0 8px #FFFFFF, 0 0 18px #FF007F, 0 0 32px #FF2BD6;
 }
 
 /* Cyber Buttons */
@@ -248,7 +276,7 @@ html, body {
   position: relative;
   background: linear-gradient(135deg, rgba(255, 0, 127, 0.9) 0%, rgba(255, 43, 214, 0.9) 50%, rgba(138, 46, 255, 0.9) 100%);
   color: #FFFFFF;
-  border: 1px solid #FF007F;
+  border: 1.5px solid #FF007F;
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 800;
@@ -270,7 +298,7 @@ html, body {
   left: -120%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
   transition: left 0.5s ease;
   pointer-events: none;
 }
@@ -280,8 +308,9 @@ html, body {
   color: #FFFFFF;
   border-color: #00F5FF;
   transform: translateY(-4px) scale(1.06);
-  text-shadow: 0 0 10px #FFFFFF, 0 0 22px #FF007F, 0 0 38px #FF2BD6;
-  box-shadow: 0 0 35px #FF007F, 0 0 65px #FF2BD6, 0 0 30px #00F5FF, inset 0 0 20px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 10px #FFFFFF, 0 0 22px #FF007F, 0 0 38px #FF2BD6, 0 0 50px #00F5FF;
+  box-shadow: 0 0 35px #FF007F, 0 0 65px #FF2BD6, 0 0 35px #00F5FF, inset 0 0 20px rgba(255, 255, 255, 0.6);
+  animation: restartGlowPulse 1.2s ease-in-out infinite alternate;
 }
 
 #btn-restart:hover::before {
@@ -291,6 +320,15 @@ html, body {
 #btn-restart:active {
   transform: translateY(1px) scale(0.98);
   box-shadow: 0 0 20px #FF007F;
+}
+
+@keyframes restartGlowPulse {
+  0% {
+    box-shadow: 0 0 30px #FF007F, 0 0 60px #FF2BD6, 0 0 30px #00F5FF, inset 0 0 18px rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 45px #FF007F, 0 0 85px #FF2BD6, 0 0 45px #00F5FF, inset 0 0 25px rgba(255, 255, 255, 0.8);
+  }
 }
 
 .cyber-btn.primary-glow:active {
@@ -307,6 +345,14 @@ html, body {
   background: rgba(138, 46, 255, 0.5);
   box-shadow: 0 0 25px rgba(138, 46, 255, 0.6);
   transform: translateY(-2px);
+}
+
+#btn-restart-pause:hover {
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.8) 0%, rgba(138, 46, 255, 0.8) 100%);
+  border-color: #FF007F;
+  box-shadow: 0 0 30px #FF007F, 0 0 50px #FF2BD6;
+  text-shadow: 0 0 10px #FFFFFF, 0 0 20px #FF007F;
+  transform: translateY(-3px) scale(1.04);
 }
 
 .action-row {
